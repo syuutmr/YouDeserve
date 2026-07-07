@@ -1,0 +1,113 @@
+﻿@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400;1,500&family=Caveat:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply min-h-screen;
+  }
+}
+
+@layer components {
+  .card {
+    background: rgba(255, 255, 255, 0.55);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.7);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.03);
+    @apply rounded-2xl p-6 sm:p-7 transition-all duration-300;
+  }
+
+  .card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.05);
+  }
+
+  .btn-primary {
+    @apply bg-emerald-500/80 hover:bg-emerald-600/90 text-white font-medium
+           px-8 py-3 rounded-full transition-all duration-300
+           shadow-sm hover:shadow-md active:scale-[0.97]
+           border border-white/20 backdrop-blur-sm;
+  }
+}
+
+@layer utilities {
+  .bg-jelly-teal {
+    background: rgba(94, 206, 180, 0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .bg-jelly-amber {
+    background: rgba(251, 191, 125, 0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .bg-jelly-violet {
+    background: rgba(196, 181, 253, 0.25);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+  }
+  .text-jelly-teal {
+    color: #0f766e;
+  }
+  .text-jelly-amber {
+    color: #92400e;
+  }
+  .text-jelly-violet {
+    color: #5b21b6;
+  }
+}
+
+/* Background blobs */
+.blob {
+  position: fixed;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.blob--1 {
+  top: -15%;
+  left: -8%;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(94, 206, 180, 0.35), transparent 70%);
+  animation: blobFloat 22s ease-in-out infinite;
+}
+
+.blob--2 {
+  bottom: -10%;
+  right: -5%;
+  width: 450px;
+  height: 450px;
+  background: radial-gradient(circle, rgba(196, 181, 253, 0.3), transparent 70%);
+  animation: blobFloat2 26s ease-in-out infinite reverse;
+}
+
+.blob--3 {
+  top: 40%;
+  right: -10%;
+  width: 350px;
+  height: 350px;
+  background: radial-gradient(circle, rgba(252, 211, 138, 0.25), transparent 70%);
+  animation: blobFloat 30s ease-in-out infinite 5s;
+}
+
+/* Glass stat card */
+.stat-card {
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.02);
+  @apply rounded-2xl p-5 transition-all duration-300;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.04);
+}
