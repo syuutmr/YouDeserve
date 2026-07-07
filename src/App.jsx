@@ -215,7 +215,7 @@ export default function App() {
   );
 
   // Signed in, no companies yet
-  if (!showDashboard && companies.length === 0) {
+  if (!showDashboard && !companiesLoading && companies.length === 0) {
     return (
       <Layout>
         {userBar}
