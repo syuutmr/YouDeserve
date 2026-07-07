@@ -1,8 +1,5 @@
-锘縤mport { useCallback } from 'react'
-import { useLocalStorage } from './useLocalStorage'
-import { generateId } from '../utils/helpers'
-
-const STORAGE_KEY = 'you-deserve-companies'
+import { useState, useEffect, useCallback } from 'react'
+import { supabase } from '../lib/supabase'
 
 const STATUS_FLOW = {
   not_applied: 'applied',
@@ -12,21 +9,39 @@ const STATUS_FLOW = {
   interview_ended: 'not_applied',
 }
 
-export function useCompanies() {
-  const [companies, setCompanies] = useLocalStorage(STORAGE_KEY, [])
+export function useCompanies(user) {
+  const [companies, setCompanies] = useState([])
+  const [loading, setLoading] = useState(true)
 
-  const addCompany = useCallback((companyData) => {
-    const now = new Date().toISOString()
+  // 加载用户的公司列表
+  useEffect(() => {
+    if (!user) {
+      setCompanies([])
+      setLoading(false)
+      return
+    }
+
+    setLoading(true)
+    supabase
+      .from('companies')
+      .select('*')
+      .order('created_at', { ascending: false })
+      .then(({ data, error }) => {
+        if (error) console.error('加载数据失败:', error)
+        else setCompanies(data || [])
+        setLoading(false)
+      })
+  }, [user])
+
+  const addCompany = useCallback(async (companyData) => {
     const newCompany = {
-      id: generateId(),
-      companyName: companyData.companyName,
+      company_name: companyData.companyName,
       position: companyData.position || '',
       industry: companyData.industry || '',
       salary: companyData.salary || '',
       level: companyData.level || 'B',
       status: 'not_applied',
       note: companyData.note || '',
-      createdAt: now,
       score: {
         salaryScore: null,
         growthScore: null,
@@ -35,46 +50,77 @@ export function useCompanies() {
         totalScore: null,
       },
       history: [],
-      actionSuggestion: '',
     }
-    setCompanies((prev) => [newCompany, ...prev])
-    return newCompany
-  }, [setCompanies])
 
-  const updateCompany = useCallback((id, updates) => {
+    const { data, error } = await supabase
+      .from('companies')
+      .insert(newCompany)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('添加失败:', error)
+      return null
+    }
+
+    setCompanies((prev) => [data, ...prev])
+    return data
+  }, [])
+
+  const updateCompany = useCallback(async (id, updates) => {
+    const { data, error } = await supabase
+      .from('companies')
+      .update(updates)
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('更新失败:', error)
+      return
+    }
+
+    setCompanies((prev) => prev.map((c) => (c.id === id ? data : c)))
+  }, [])
+
+  const changeStatus = useCallback(async (id) => {
+    const company = companies.find((c) => c.id === id)
+    if (!company) return
+
+    const newStatus = STATUS_FLOW[company.status] || company.status
+
+    const { error } = await supabase
+      .from('companies')
+      .update({ status: newStatus })
+      .eq('id', id)
+
+    if (error) {
+      console.error('状态更新失败:', error)
+      return
+    }
+
     setCompanies((prev) =>
-      prev.map((c) => {
-        if (c.id !== id) return c
-        const updated = { ...c, ...updates }
-        if (updates.level && updates.level !== c.level) {
-          const historyEntry = {
-            date: new Date().toISOString(),
-            oldLevel: c.level,
-            newLevel: updates.level,
-            reason: '鐢ㄦ埛鎵嬪姩璋冩暣',
-          }
-          updated.history = [...(c.history || []), historyEntry]
-        }
-        return updated
-      })
+      prev.map((c) => (c.id === id ? { ...c, status: newStatus } : c))
     )
-  }, [setCompanies])
+  }, [companies])
 
-  const changeStatus = useCallback((id) => {
-    setCompanies((prev) =>
-      prev.map((c) => {
-        if (c.id !== id) return c
-        return { ...c, status: STATUS_FLOW[c.status] || c.status }
-      })
-    )
-  }, [setCompanies])
+  const deleteCompany = useCallback(async (id) => {
+    const { error } = await supabase
+      .from('companies')
+      .delete()
+      .eq('id', id)
 
-  const deleteCompany = useCallback((id) => {
+    if (error) {
+      console.error('删除失败:', error)
+      return
+    }
+
     setCompanies((prev) => prev.filter((c) => c.id !== id))
-  }, [setCompanies])
+  }, [])
 
   return {
     companies,
+    loading,
     addCompany,
     updateCompany,
     changeStatus,

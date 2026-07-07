@@ -1,19 +1,20 @@
-ï»¿import { useState, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import Layout from './components/layout/Layout'
 import Hero from './components/dashboard/Hero'
-import SignInPage from './components/auth/SignInPage'
 import StatsOverview from './components/dashboard/StatsOverview'
 import CompanyList from './components/company/CompanyList'
 import SearchBar from './components/filters/SearchBar'
 import FilterBar from './components/filters/FilterBar'
 import AddCompanyModal from './components/modal/AddCompanyModal'
-import { useCompanies } from './hooks/useCompanies'
+import SignInPage from './components/auth/SignInPage'
 import { useAuth } from './hooks/useAuth'
+import { useCompanies } from './hooks/useCompanies'
 
 export default function App() {
-  const { user, isSignedIn, signIn, signOut } = useAuth()
-  const { companies, addCompany, updateCompany, changeStatus, deleteCompany } = useCompanies()
-  const [page, setPage] = useState(() => isSignedIn ? 'dashboard' : 'hero')
+  const { user, loading, isSignedIn, signIn, signUp, signOut } = useAuth()
+  const { companies, loading: companiesLoading, addCompany, updateCompany, changeStatus, deleteCompany } = useCompanies(user)
+
+  const [showDashboard, setShowDashboard] = useState(false)
   const [showModal, setShowModal] = useState(false)
   const [editingCompany, setEditingCompany] = useState(null)
   const [search, setSearch] = useState('')
@@ -22,7 +23,7 @@ export default function App() {
 
   const filteredCompanies = useMemo(() => {
     return companies.filter((c) => {
-      if (search && !c.companyName.toLowerCase().includes(search.toLowerCase())) return false
+      if (search && !c.company_name.toLowerCase().includes(search.toLowerCase())) return false
       if (levelFilter && c.level !== levelFilter) return false
       if (statusFilter && c.status !== statusFilter) return false
       return true
@@ -54,12 +55,13 @@ export default function App() {
   const handleAddCompany = (data) => {
     addCompany(data)
     closeModal()
+    setShowDashboard(true)
   }
 
   const handleEditCompany = (data) => {
     if (data.id) {
       updateCompany(data.id, {
-        companyName: data.companyName,
+        company_name: data.companyName,
         position: data.position,
         industry: data.industry,
         salary: data.salary,
@@ -70,63 +72,66 @@ export default function App() {
     closeModal()
   }
 
-  const handleSignIn = (name) => {
-    signIn(name)
-    setPage('dashboard')
-  }
-
-  const handleSignOut = () => {
-    signOut()
-    setPage('hero')
-  }
-
-  // â”€â”€ Hero â”€â”€
-  if (page === 'hero') {
+  // ¼ÓÔØÖÐ
+  if (loading) {
     return (
       <Layout>
-        <Hero onStart={() => setPage('signin')} />
-      </Layout>
-    )
-  }
-
-  // â”€â”€ Sign In â”€â”€
-  if (page === 'signin') {
-    return (
-      <Layout>
-        <div className="animate-slide-up-fade">
-          <SignInPage onSignIn={handleSignIn} />
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <div className="text-secondary/50">Loading...</div>
         </div>
       </Layout>
     )
   }
 
-  // â”€â”€ Dashboard â”€â”€
+  // Î´µÇÂ¼
+  if (!isSignedIn) {
+    return (
+      <Layout>
+        <SignInPage onSignIn={signIn} onSignUp={signUp} />
+      </Layout>
+    )
+  }
+
+  // ÒÑµÇÂ¼µ«Ã»ÓÐ¹«Ë¾
+  if (!showDashboard && companies.length === 0) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-end gap-4 mb-4">
+          <span className="text-sm text-secondary/50">{user.email}</span>
+          <button onClick={signOut} className="text-xs text-secondary/30 hover:text-rose-400/70 transition-colors">
+            Sign Out
+          </button>
+        </div>
+        <Hero onStart={() => setShowDashboard(true)} />
+      </Layout>
+    )
+  }
+
   return (
     <Layout>
+      <div className="flex items-center justify-end gap-4 mb-4">
+        <span className="text-sm text-secondary/50">{user.email}</span>
+        <button onClick={signOut} className="text-xs text-secondary/30 hover:text-rose-400/70 transition-colors">
+          Sign Out
+        </button>
+      </div>
+
       <div className="animate-slide-up-fade">
         <div className="flex items-center justify-between mb-8">
           <div>
             <h1 className="font-display text-2xl sm:text-3xl font-medium text-primary">
               You deserve.
             </h1>
-            <p className="text-sm text-secondary/50 mt-0.5 font-handwriting">
-              âœ¦ {user?.name}
+            <p className="text-sm text-secondary/60 mt-0.5 font-handwriting">
+              Filter out the noise. Find what you deserve.
             </p>
           </div>
-          <div className="flex items-center gap-3">
-            <button
-              onClick={handleSignOut}
-              className="text-xs text-secondary/30 hover:text-rose-400/70 transition-colors"
-            >
-              Sign Out
-            </button>
-            <button
-              onClick={openAddModal}
-              className="btn-primary text-sm px-6 py-2.5"
-            >
-              + Add Company
-            </button>
-          </div>
+          <button
+            onClick={openAddModal}
+            className="btn-primary text-sm px-6 py-2.5"
+          >
+            + Add Company
+          </button>
         </div>
 
         <StatsOverview stats={stats} />
@@ -141,12 +146,16 @@ export default function App() {
           />
         </div>
 
-        <CompanyList
-          companies={filteredCompanies}
-          onStatusChange={changeStatus}
-          onDelete={deleteCompany}
-          onDoubleClick={openEditModal}
-        />
+        {companiesLoading ? (
+          <div className="text-center py-20 text-secondary/50">Loading...</div>
+        ) : (
+          <CompanyList
+            companies={filteredCompanies}
+            onStatusChange={changeStatus}
+            onDelete={deleteCompany}
+            onDoubleClick={openEditModal}
+          />
+        )}
       </div>
 
       {showModal && (

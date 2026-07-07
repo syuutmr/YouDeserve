@@ -1,10 +1,10 @@
-ï»¿import { useState } from 'react'
+import { useState } from 'react'
 import { LEVELS } from '../../utils/constants'
 
 export default function AddCompanyModal({ onClose, onSave, editCompany = null }) {
   const isEdit = editCompany !== null
   const [form, setForm] = useState({
-    companyName: editCompany?.companyName || '',
+    companyName: editCompany?.company_name || editCompany?.companyName || '',
     position: editCompany?.position || '',
     industry: editCompany?.industry || '',
     salary: editCompany?.salary || '',
@@ -16,7 +16,7 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!form.companyName.trim()) {
-      setError('è¯·å¡«å†™å…¬å¸åç§°')
+      setError('ÇëÌîĞ´¹«Ë¾Ãû³Æ')
       return
     }
     const data = {
@@ -39,24 +39,24 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
       <div className="relative bg-white/70 backdrop-blur-xl rounded-3xl shadow-xl w-full max-w-lg p-8 animate-fade-in max-h-[90vh] overflow-y-auto border border-white/60">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-primary">
-            {isEdit ? 'ç¼–è¾‘å…¬å¸' : 'æ·»åŠ å…¬å¸'}
+            {isEdit ? '±à¼­¹«Ë¾' : 'Ìí¼Ó¹«Ë¾'}
           </h2>
           <button
             onClick={onClose}
             className="w-8 h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-gray-500 hover:bg-white/60 transition-all"
           >
-            âœ•
+            ?
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">
-              å…¬å¸åç§° <span className="text-rose-400">*</span>
+              ¹«Ë¾Ãû³Æ <span className="text-rose-400">*</span>
             </label>
             <input
               type="text"
-              placeholder="è¾“å…¥å…¬å¸åç§°"
+              placeholder="ÊäÈë¹«Ë¾Ãû³Æ"
               value={form.companyName}
               onChange={(e) => updateField('companyName', e.target.value)}
               className="w-full px-4 py-2.5 bg-white/50 border border-white/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-300 transition-all placeholder:text-gray-300 backdrop-blur-sm"
@@ -66,10 +66,10 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">å²—ä½åç§°</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">¸ÚÎ»Ãû³Æ</label>
             <input
               type="text"
-              placeholder="å‰ç«¯å·¥ç¨‹å¸ˆ"
+              placeholder="Ç°¶Ë¹¤³ÌÊ¦"
               value={form.position}
               onChange={(e) => updateField('position', e.target.value)}
               className="w-full px-4 py-2.5 bg-white/50 border border-white/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-200 transition-all placeholder:text-gray-300 backdrop-blur-sm"
@@ -78,17 +78,17 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">è¡Œä¸š</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">ĞĞÒµ</label>
               <input
                 type="text"
-                placeholder="äº’è”ç½‘ / SaaS"
+                placeholder="»¥ÁªÍø / SaaS"
                 value={form.industry}
                 onChange={(e) => updateField('industry', e.target.value)}
                 className="w-full px-4 py-2.5 bg-white/50 border border-white/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-200 transition-all placeholder:text-gray-300 backdrop-blur-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">è–ªèµ„èŒƒå›´</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Ğ½×Ê·¶Î§</label>
               <input
                 type="text"
                 placeholder="20k-30k"
@@ -100,18 +100,14 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">è¯„çº§</label>
+            <label className="block text-sm font-medium text-gray-700 mb-2">ÆÀ¼¶</label>
             <div className="flex gap-2">
               {Object.entries(LEVELS).map(([key, info]) => (
                 <button
                   key={key}
                   type="button"
                   onClick={() => updateField('level', key)}
-                  className={`flex-1 p-3 rounded-xl border-2 text-center transition-all backdrop-blur-sm ${
-                    form.level === key
-                      ? info.badgeClass.replace('border border-white/40', '') + ' border-current'
-                      : 'bg-white/30 border-white/40 text-gray-400 hover:bg-white/50'
-                  }`}
+                  className={lex-1 p-3 rounded-xl border-2 text-center transition-all backdrop-blur-sm }
                 >
                   <span className="block text-lg font-bold">{info.label}</span>
                   <span className="block text-xs mt-0.5 leading-tight opacity-70">{info.title}</span>
@@ -121,9 +117,9 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1.5">å¤‡æ³¨</label>
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">±¸×¢</label>
             <textarea
-              placeholder="ä»»ä½•æƒ³è®°å½•çš„ä¿¡æ¯..."
+              placeholder="ÈÎºÎÏë¼ÇÂ¼µÄĞÅÏ¢..."
               value={form.note}
               onChange={(e) => updateField('note', e.target.value)}
               rows={3}
@@ -132,7 +128,7 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
           </div>
 
           <button type="submit" className="w-full btn-primary py-3 mt-2">
-            {isEdit ? 'ä¿å­˜ä¿®æ”¹' : 'ä¿å­˜å…¬å¸'}
+            {isEdit ? '±£´æĞŞ¸Ä' : '±£´æ¹«Ë¾'}
           </button>
         </form>
       </div>
