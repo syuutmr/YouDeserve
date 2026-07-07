@@ -1,4 +1,4 @@
-import { formatDate } from '../../utils/helpers'
+ï»¿import { formatDate } from '../../utils/helpers'
 import RatingBadge from './RatingBadge'
 import StatusTracker from './StatusTracker'
 
@@ -21,9 +21,9 @@ export default function CompanyCard({ company, onStatusChange, onDelete, onDoubl
       </div>
 
       <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-secondary/50 mb-3">
-        <span>Ìí¼ÓÓÚ {formatDate(company.created_at)}</span>
-        {company.industry && <span>¡¤ {company.industry}</span>}
-        {company.salary && <span>¡¤ {company.salary}</span>}
+        <span>Added {formatDate(company.created_at)}</span>
+        {company.industry && <span>{company.industry}</span>}
+        {company.salary && <span>{company.salary}</span>}
       </div>
 
       <div className="flex items-center justify-end">
@@ -31,7 +31,7 @@ export default function CompanyCard({ company, onStatusChange, onDelete, onDoubl
           onClick={(e) => { e.stopPropagation(); onDelete(company.id) }}
           className="text-xs text-secondary/30 hover:text-rose-400/70 transition-colors opacity-0 group-hover:opacity-100"
         >
-          É¾³ý
+          Delete
         </button>
       </div>
 

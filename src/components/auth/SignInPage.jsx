@@ -64,10 +64,9 @@ export default function SignInPage({ onSignIn, onSignUp }) {
               placeholder="Nickname"
               value={nickname}
               onChange={(e) => setNickname(e.target.value)}
-              className="w-full px-5 py-3.5 bg-white/60 backdrop-blur-sm border border-white/70 rounded-xl text-center text-base
+              className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl text-sm text-center
                          focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-300
-                         transition-all placeholder:text-gray-300/70"
-              required
+                         transition-all placeholder:text-gray-300 backdrop-blur-sm"
               autoFocus
             />
           )}
@@ -76,58 +75,50 @@ export default function SignInPage({ onSignIn, onSignUp }) {
             placeholder="Email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-5 py-3.5 bg-white/60 backdrop-blur-sm border border-white/70 rounded-xl text-center text-base
+            className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl text-sm text-center
                        focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-300
-                       transition-all placeholder:text-gray-300/70"
+                       transition-all placeholder:text-gray-300 backdrop-blur-sm"
             required
-            autoFocus={!isSignUp}
           />
           <input
             type="password"
             placeholder="Password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-5 py-3.5 bg-white/60 backdrop-blur-sm border border-white/70 rounded-xl text-center text-base
+            className="w-full px-4 py-3 bg-white/50 border border-white/60 rounded-xl text-sm text-center
                        focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-300
-                       transition-all placeholder:text-gray-300/70"
+                       transition-all placeholder:text-gray-300 backdrop-blur-sm"
             required
             minLength={6}
           />
 
           {error && (
-            <p className="text-sm text-rose-500 bg-rose-50/80 rounded-xl px-4 py-2.5 text-center">
-              {error}
-            </p>
+            <p className="text-sm text-rose-500 bg-rose-50/60 rounded-xl px-4 py-2">{error}</p>
           )}
           {message && (
-            <p className="text-sm text-emerald-600 bg-emerald-50/80 rounded-xl px-4 py-2.5 text-center">
-              {message}
-            </p>
+            <p className="text-sm text-emerald-600 bg-emerald-50/60 rounded-xl px-4 py-2">{message}</p>
           )}
 
-          <button
-            type="submit"
-            className="w-full btn-primary text-base sm:text-lg px-10 py-3.5"
-          >
+          <button type="submit" className="w-full btn-primary text-base py-3.5">
             {isSignUp ? "Sign Up" : "Sign In"}
           </button>
+
+          <p className="text-sm text-secondary/50 text-center">
+            {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
+            <button
+              type="button"
+              onClick={() => {
+                setIsSignUp(!isSignUp);
+                setError("");
+                setMessage("");
+              }}
+              className="text-emerald-600 hover:text-emerald-700 underline underline-offset-2"
+            >
+              {isSignUp ? "Sign In" : "Sign Up"}
+            </button>
+          </p>
         </form>
       </div>
-
-      <p className="mt-6 text-sm text-secondary/50">
-        {isSignUp ? "Already have an account?" : "Don't have an account?"}{" "}
-        <button
-          type="button"
-          onClick={() => {
-            setIsSignUp(!isSignUp);
-            setError("");
-            setMessage("");
-          }}
-          className="text-emerald-600 hover:text-emerald-700 underline underline-offset-2 font-medium transition-colors"
-        >
-          {isSignUp ? "Sign In" : "Sign Up"}
-        </button>
-      </p>
     </div>
   );
 }

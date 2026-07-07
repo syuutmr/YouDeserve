@@ -104,10 +104,7 @@ export default function App() {
 
   const filteredCompanies = useMemo(() => {
     return companies.filter((c) => {
-      if (
-        search &&
-        !c.company_name.toLowerCase().includes(search.toLowerCase())
-      )
+      if (search && !c.company_name.toLowerCase().includes(search.toLowerCase()))
         return false;
       if (levelFilter && c.level !== levelFilter) return false;
       if (statusFilter && c.status !== statusFilter) return false;
@@ -140,8 +137,9 @@ export default function App() {
     setEditingCompany(null);
   };
 
-  const handleAddCompany = (data) => {
-    addCompany(data);
+  const handleAddCompany = async (data) => {
+    const result = await addCompany(data);
+    if (!result) return;
     closeModal();
     setShowDashboard(true);
   };
@@ -160,6 +158,7 @@ export default function App() {
     closeModal();
   };
 
+  // Loading state
   if (loading) {
     return (
       <Layout>
@@ -170,6 +169,7 @@ export default function App() {
     );
   }
 
+  // Not signed in
   if (!isSignedIn) {
     return (
       <Layout>
@@ -178,7 +178,7 @@ export default function App() {
     );
   }
 
-  // signed in user bar
+  // User bar with profile card
   const userBar = (
     <div className="flex items-center justify-end gap-4 mb-4 relative">
       <div className="relative">
@@ -214,6 +214,7 @@ export default function App() {
     </div>
   );
 
+  // Signed in, no companies yet
   if (!showDashboard && companies.length === 0) {
     return (
       <Layout>

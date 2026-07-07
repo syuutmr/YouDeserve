@@ -1,5 +1,5 @@
--- ´´½¨ companies ±í
-CREATE TABLE companies (
+ï»¿-- Companies table
+CREATE TABLE IF NOT EXISTS companies (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) NOT NULL,
   company_name TEXT NOT NULL,
@@ -15,38 +15,39 @@ CREATE TABLE companies (
   updated_at TIMESTAMPTZ DEFAULT now()
 );
 
--- ¿ªÆôÐÐ¼¶°²È«
+-- Enable Row Level Security
 ALTER TABLE companies ENABLE ROW LEVEL SECURITY;
 
--- ÓÃ»§Ö»ÄÜ¿´×Ô¼ºµÄÊý¾Ý
+-- Users can only view their own companies
 CREATE POLICY "Users can view own companies"
   ON companies FOR SELECT
   USING (auth.uid() = user_id);
 
--- ÓÃ»§Ö»ÄÜÐÂÔö×Ô¼ºµÄÊý¾Ý
+-- Users can only insert their own companies
 CREATE POLICY "Users can insert own companies"
   ON companies FOR INSERT
   WITH CHECK (auth.uid() = user_id);
 
--- ÓÃ»§Ö»ÄÜ¸üÐÂ×Ô¼ºµÄÊý¾Ý
+-- Users can only update their own companies
 CREATE POLICY "Users can update own companies"
   ON companies FOR UPDATE
   USING (auth.uid() = user_id);
 
--- ÓÃ»§Ö»ÄÜÉ¾³ý×Ô¼ºµÄÊý¾Ý
+-- Users can only delete their own companies
 CREATE POLICY "Users can delete own companies"
   ON companies FOR DELETE
   USING (auth.uid() = user_id);
 
--- ×Ô¶¯¸üÐÂ updated_at µÄ´¥·¢Æ÷
+-- Auto-update updated_at trigger function
 CREATE OR REPLACE FUNCTION update_updated_at()
-RETURNS TRIGGER AS 
+RETURNS TRIGGER AS $$
 BEGIN
   NEW.updated_at = now();
   RETURN NEW;
 END;
- LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql;
 
+-- Auto-update trigger
 CREATE TRIGGER companies_updated_at
   BEFORE UPDATE ON companies
   FOR EACH ROW

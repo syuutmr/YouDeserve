@@ -1,33 +1,36 @@
-﻿import { useState } from "react";
-import { LEVELS } from "../../utils/constants";
+﻿import { useState } from 'react'
+import { LEVELS } from '../../utils/constants'
 
 export default function AddCompanyModal({ onClose, onSave, editCompany = null }) {
-  const isEdit = editCompany !== null;
+  const isEdit = editCompany !== null
   const [form, setForm] = useState({
-    companyName: editCompany?.company_name || editCompany?.companyName || "",
-    position: editCompany?.position || "",
-    industry: editCompany?.industry || "",
-    salary: editCompany?.salary || "",
-    level: editCompany?.level || "B",
-    note: editCompany?.note || "",
-  });
-  const [error, setError] = useState("");
+    companyName: editCompany?.company_name || editCompany?.companyName || '',
+    position: editCompany?.position || '',
+    industry: editCompany?.industry || '',
+    salary: editCompany?.salary || '',
+    level: editCompany?.level || 'B',
+    note: editCompany?.note || '',
+  })
+  const [error, setError] = useState('')
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     if (!form.companyName.trim()) {
-      setError("Please enter the company name");
-      return;
+      setError('Please enter company name')
+      return
     }
-    const data = { ...form, companyName: form.companyName.trim() };
-    if (isEdit) data.id = editCompany.id;
-    onSave(data);
-  };
+    const data = {
+      ...form,
+      companyName: form.companyName.trim(),
+    }
+    if (isEdit) data.id = editCompany.id
+    onSave(data)
+  }
 
   const updateField = (field, value) => {
-    setForm((prev) => ({ ...prev, [field]: value }));
-    if (error) setError("");
-  };
+    setForm((prev) => ({ ...prev, [field]: value }))
+    if (error) setError('')
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
@@ -36,13 +39,13 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
       <div className="relative bg-white/70 backdrop-blur-xl rounded-3xl shadow-xl w-full max-w-lg p-8 animate-fade-in max-h-[90vh] overflow-y-auto border border-white/60">
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold text-primary">
-            {isEdit ? "Edit Company" : "Add Company"}
+            {isEdit ? 'Edit Company' : 'Add Company'}
           </h2>
           <button
             onClick={onClose}
-            className="w-8 h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-gray-500 hover:bg-white/60 transition-all text-lg"
+            className="w-8 h-8 flex items-center justify-center rounded-full text-gray-300 hover:text-gray-500 hover:bg-white/60 transition-all"
           >
-            ×
+            ?
           </button>
         </div>
 
@@ -53,9 +56,9 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
             </label>
             <input
               type="text"
-              placeholder="Company name"
+              placeholder="Enter company name"
               value={form.companyName}
-              onChange={(e) => updateField("companyName", e.target.value)}
+              onChange={(e) => updateField('companyName', e.target.value)}
               className="w-full px-4 py-2.5 bg-white/50 border border-white/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-200 focus:border-emerald-300 transition-all placeholder:text-gray-300 backdrop-blur-sm"
               autoFocus
             />
@@ -66,9 +69,9 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Position</label>
             <input
               type="text"
-              placeholder="e.g. Frontend Developer"
+              placeholder="e.g. Frontend Engineer"
               value={form.position}
-              onChange={(e) => updateField("position", e.target.value)}
+              onChange={(e) => updateField('position', e.target.value)}
               className="w-full px-4 py-2.5 bg-white/50 border border-white/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-200 transition-all placeholder:text-gray-300 backdrop-blur-sm"
             />
           </div>
@@ -78,19 +81,19 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
               <label className="block text-sm font-medium text-gray-700 mb-1.5">Industry</label>
               <input
                 type="text"
-                placeholder="Internet / SaaS"
+                placeholder="e.g. Fintech / SaaS"
                 value={form.industry}
-                onChange={(e) => updateField("industry", e.target.value)}
+                onChange={(e) => updateField('industry', e.target.value)}
                 className="w-full px-4 py-2.5 bg-white/50 border border-white/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-200 transition-all placeholder:text-gray-300 backdrop-blur-sm"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">Salary</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1.5">Salary Range</label>
               <input
                 type="text"
-                placeholder="20k-30k"
+                placeholder="e.g. 20k-30k"
                 value={form.salary}
-                onChange={(e) => updateField("salary", e.target.value)}
+                onChange={(e) => updateField('salary', e.target.value)}
                 className="w-full px-4 py-2.5 bg-white/50 border border-white/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-200 transition-all placeholder:text-gray-300 backdrop-blur-sm"
               />
             </div>
@@ -103,13 +106,8 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
                 <button
                   key={key}
                   type="button"
-                  onClick={() => updateField("level", key)}
-                  className={
-                    "flex-1 p-3 rounded-xl border-2 text-center transition-all backdrop-blur-sm " +
-                    (form.level === key
-                      ? info.badgeClass.replace("border border-white/40", "") + " border-current"
-                      : "bg-white/30 border-white/40 text-gray-400 hover:bg-white/50")
-                  }
+                  onClick={() => updateField('level', key)}
+                  className={'flex-1 p-3 rounded-xl border-2 text-center transition-all backdrop-blur-sm ' + (form.level === key ? (info.badgeClass.replace('border border-white/40', '') + ' border-current') : 'bg-white/30 border-white/40 text-gray-400 hover:bg-white/50')}
                 >
                   <span className="block text-lg font-bold">{info.label}</span>
                   <span className="block text-xs mt-0.5 leading-tight opacity-70">{info.title}</span>
@@ -121,19 +119,19 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1.5">Notes</label>
             <textarea
-              placeholder="Any notes you want to keep..."
+              placeholder="Any additional information..."
               value={form.note}
-              onChange={(e) => updateField("note", e.target.value)}
+              onChange={(e) => updateField('note', e.target.value)}
               rows={3}
               className="w-full px-4 py-2.5 bg-white/50 border border-white/60 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-emerald-200 transition-all placeholder:text-gray-300 backdrop-blur-sm resize-none"
             />
           </div>
 
           <button type="submit" className="w-full btn-primary py-3 mt-2">
-            {isEdit ? "Save Changes" : "Save Company"}
+            {isEdit ? 'Save Changes' : 'Save Company'}
           </button>
         </form>
       </div>
     </div>
-  );
+  )
 }
