@@ -107,7 +107,7 @@ export default function AddCompanyModal({ onClose, onSave, editCompany = null })
                   key={key}
                   type="button"
                   onClick={() => updateField('level', key)}
-                  className={lex-1 p-3 rounded-xl border-2 text-center transition-all backdrop-blur-sm }
+                  className={'flex-1 p-3 rounded-xl border-2 text-center transition-all backdrop-blur-sm ' + (form.level === key ? (info.badgeClass.replace('border border-white/40', '') + ' border-current') : 'bg-white/30 border-white/40 text-gray-400 hover:bg-white/50')}
                 >
                   <span className="block text-lg font-bold">{info.label}</span>
                   <span className="block text-xs mt-0.5 leading-tight opacity-70">{info.title}</span>
